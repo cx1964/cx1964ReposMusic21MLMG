@@ -9,7 +9,7 @@ from keras.layers import Dropout
 from keras.layers import LSTM
 from keras.layers import Activation
 
-homeDir = '/home/claude/Documents/sources/python/python3/python3_Classical_Piano-Composer/src/'
+homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
 def generate():
     """ Generate a piano midi file """
