@@ -9,6 +9,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import LSTM
 from keras.layers import Activation
+from keras.utils.vis_utils import plot_model
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
@@ -94,7 +95,6 @@ def create_network(network_input, n_vocab):
         input_shape=(network_input.shape[1], network_input.shape[2]),
         return_sequences=True
     ))
-    
     model.add(Dropout(0.3))
     model.add(LSTM(512, return_sequences=True))
     model.add(Dropout(0.3))
@@ -105,8 +105,24 @@ def create_network(network_input, n_vocab):
     model.add(Activation('softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
+    # Visualize Model
+    print(model.summary())
+    plot_model(model, to_file=homeDir+'model_plot.png', show_shapes=True, show_layer_names=True)
+    print("Zie: model_plot.png")
+
+    print("Tot hier OK1 en geen fout melding")
     # Load the weights to each node
-    model.load_weights(homeDir+'weights.hdf5')
+
+    #model.load_weights(homeDir+'weights.hdf5') # Deze regel creeert een fout
+
+    # Indien gebruik wordt gemaakt van de laatste gegenereerde hdf5
+    # wat is weights-improvement-01-3.7268-bigger.hdf5
+    # Dan loopt dit script niet vast.
+    # De ???vraag??? is nu:
+    # Moeten nu alle andere weights-improvement-01*.hdf5 ook verwerken?
+    # En hoe deo ik dat dan?
+    model.load_weights(homeDir+'weights-improvement-01-3.7268-bigger.hdf5')
+    print("Tot hier OK2 en geen fout melding")
     return model
 
 def generate_notes(model, network_input, pitchnames, n_vocab):
@@ -170,7 +186,7 @@ def create_midi(prediction_output):
 
     # create sheetmusic
     sheetmusic = stream.Stream(output_notes)
-    sheetmusic.show()
+    #sheetmusic.show()
 
 if __name__ == '__main__':
     generate()
