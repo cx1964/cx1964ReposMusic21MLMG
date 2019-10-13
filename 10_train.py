@@ -51,7 +51,7 @@ def get_notes():
     with open('data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
 
-    return notes
+    return notes # return een list of notes. Offset informatie (=tijd) gaat verloren
 
 def prepare_sequences(notes, n_vocab):
     """ Prepare the sequences used by the Neural Network """
