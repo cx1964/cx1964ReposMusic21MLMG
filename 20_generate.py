@@ -1,3 +1,7 @@
+# Filename: 20_generate.py
+# Functie: script to generate the notes
+# Remark: Intial source based on Tensorflow v1 usage
+
 """ This module generates notes for a midi file using the
     trained neural network """
 import pickle
