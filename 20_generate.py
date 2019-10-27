@@ -8,7 +8,12 @@ import pickle
 import numpy
 from music21 import instrument, note, stream, chord
 
-from keras.models import Sequential
+from tensorflow.keras.models import Sequential # tensorflow v2
+# from keras.models import Sequential # tensorflow v1
+# When using from keras.models import Sequential with tensorflow
+# create message: AttributeError: module 'tensorflow' has no attribute 'get_default_graph'
+# see: https://stackoverflow.com/questions/55496289/how-to-fix-attributeerror-module-tensorflow-has-no-attribute-get-default-gr
+
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import LSTM
@@ -29,9 +34,13 @@ def generate():
     n_vocab = len(set(notes))
 
     network_input, normalized_input = prepare_sequences(notes, pitchnames, n_vocab)
+    # todo: tgv overgang tensorflow 1 ->2 gaat in create_network() wat mis
     model = create_network(normalized_input, n_vocab)
+    '''
+    todo: aanzetten
     prediction_output = generate_notes(model, network_input, pitchnames, n_vocab)
     create_midi(prediction_output)
+    '''
 
 def prepare_sequences(notes, pitchnames, n_vocab):
     """ Prepare the sequences used by the Neural Network """
@@ -59,41 +68,10 @@ def prepare_sequences(notes, pitchnames, n_vocab):
 def create_network(network_input, n_vocab):
     """ create the structure of the neural network """
 
-    # Dit statement genereert warning
-    # WARNING:tensorflow:From /home/claude/anaconda3/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:74:
-    # The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead
-    model = Sequential()
-    
-    # Dit statement genereert warning:
-    # WARNING:tensorflow:From /home/claude/anaconda3/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:517: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
-    #
-    # WARNING:tensorflow:From /home/claude/anaconda3/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:4138: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
-    #
-    # OMP: Info #212: KMP_AFFINITY: decoding x2APIC ids.
-    # OMP: Info #210: KMP_AFFINITY: Affinity capable, using global cpuid leaf 11 info
-    # OMP: Info #154: KMP_AFFINITY: Initial OS proc set respected: 0-7
-    # OMP: Info #156: KMP_AFFINITY: 8 available OS procs
-    # OMP: Info #157: KMP_AFFINITY: Uniform topology
-    # OMP: Info #179: KMP_AFFINITY: 1 packages x 4 cores/pkg x 2 threads/core (4 total cores)
-    # OMP: Info #214: KMP_AFFINITY: OS proc to physical thread map:
-    # OMP: Info #171: KMP_AFFINITY: OS proc 0 maps to package 0 core 0 thread 0 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 4 maps to package 0 core 0 thread 1 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 1 maps to package 0 core 1 thread 0 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 5 maps to package 0 core 1 thread 1 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 2 maps to package 0 core 2 thread 0 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 6 maps to package 0 core 2 thread 1 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 3 maps to package 0 core 3 thread 0 
-    # OMP: Info #171: KMP_AFFINITY: OS proc 7 maps to package 0 core 3 thread 1 
-    # OMP: Info #250: KMP_AFFINITY: pid 18881 tid 18881 thread 0 bound to OS proc set 0
-    # OMP: Info #250: KMP_AFFINITY: pid 18881 tid 18887 thread 1 bound to OS proc set 1
-    # OMP: Info #250: KMP_AFFINITY: pid 18881 tid 18888 thread 2 bound to OS proc set 2
-    # OMP: Info #250: KMP_AFFINITY: pid 18881 tid 18889 thread 3 bound to OS proc set 3
-
-    # ### ToDo ###
-    # Nog zoeken naar command binnen deze functie in onderstaande code die ValueError veroorzaakt
-    # Fout melding
-    # ValueError: Dimension 1 in both shapes must be equal, but are 58 and 359.
-    # Shapes are [256,58] and [256,359]. for 'Assign_11' (op: 'Assign') with input shapes: [256,58], [256,359].
+    #  see keras tensorflow v2 documentation https://www.tensorflow.org/api_docs/python/tf/keras/Sequential
+    print("OK1 for create_network() Sequential()")
+    # create_network
+    model = Sequential() # this also works for tensorflow v2
     model.add(LSTM(
         512,
         input_shape=(network_input.shape[1], network_input.shape[2]),
@@ -107,26 +85,21 @@ def create_network(network_input, n_vocab):
     model.add(Dropout(0.3))
     model.add(Dense(n_vocab))
     model.add(Activation('softmax'))
+    
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-
+    
     # Visualize Model
     print(model.summary())
     plot_model(model, to_file=homeDir+'model_plot.png', show_shapes=True, show_layer_names=True)
-    print("Zie: model_plot.png")
+    print("See: model_plot.png")
 
     print("Tot hier OK1 en geen fout melding")
     # Load the weights to each node
 
     #model.load_weights(homeDir+'weights.hdf5') # Deze regel creeert een fout
-
-    # Indien gebruik wordt gemaakt van de laatste gegenereerde hdf5
-    # wat is weights-improvement-01-3.7268-bigger.hdf5
-    # Dan loopt dit script niet vast.
-    # De ???vraag??? is nu:
-    # Moeten nu alle andere weights-improvement-01*.hdf5 ook verwerken?
-    # En hoe deo ik dat dan?
+    # Zie artikel Jason Brownlee mbt 2 methode mbt leerproces tav veiligstellen van de gewichten in een hdf5 file
     model.load_weights(homeDir+'weights-improvement-01-3.7268-bigger.hdf5')
-    print("Tot hier OK2 en geen fout melding")
+    print("OK final: create_network()")
     return model
 
 def generate_notes(model, network_input, pitchnames, n_vocab):
