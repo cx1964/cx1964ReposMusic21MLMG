@@ -1,3 +1,7 @@
+# Filename: 10_train.py
+# Functie: script te train the network
+# Remark: Intial source based on Tensorflow v1 usage
+
 """ This module prepares midi file data and feeds it to the neural
     network for training """
 import glob
