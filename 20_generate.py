@@ -8,17 +8,28 @@ import pickle
 import numpy
 from music21 import instrument, note, stream, chord
 
+# because of tensorflow v2 usage change all 
+# "from keras.*" expressions 
+# into "from tensorflow.keras.*" expressions
 from tensorflow.keras.models import Sequential # tensorflow v2
 # from keras.models import Sequential # tensorflow v1
+
 # When using from keras.models import Sequential with tensorflow
 # create message: AttributeError: module 'tensorflow' has no attribute 'get_default_graph'
 # see: https://stackoverflow.com/questions/55496289/how-to-fix-attributeerror-module-tensorflow-has-no-attribute-get-default-gr
+# To fix this, use tensorflow.keras.* instead of keras.*
+# Because of pylint issues in Visual code use
+# Use <cntrl> <shift> p lint, to change lint to bandit
+# use pip install bandit in Visual code to install bandit
 
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import LSTM
-from keras.layers import Activation
-from keras.utils.vis_utils import plot_model
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import LSTM
+from tensorflow.keras.layers import Activation
+# error no module named tensorflow.keras.utils.vis_utils
+#from tensorflow.keras.utils.vis_utils import plot_model
+from tensorflow.keras.utils import plot_model
+
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
@@ -36,11 +47,9 @@ def generate():
     network_input, normalized_input = prepare_sequences(notes, pitchnames, n_vocab)
     # todo: tgv overgang tensorflow 1 ->2 gaat in create_network() wat mis
     model = create_network(normalized_input, n_vocab)
-    '''
-    todo: aanzetten
     prediction_output = generate_notes(model, network_input, pitchnames, n_vocab)
     create_midi(prediction_output)
-    '''
+
 
 def prepare_sequences(notes, pitchnames, n_vocab):
     """ Prepare the sequences used by the Neural Network """
@@ -163,7 +172,8 @@ def create_midi(prediction_output):
 
     # create sheetmusic
     sheetmusic = stream.Stream(output_notes)
-    #sheetmusic.show()
+    sheetmusic.show()
+    print("20_generate.py execute succesfully")
 
 if __name__ == '__main__':
     generate()
