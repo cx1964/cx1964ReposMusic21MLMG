@@ -26,7 +26,7 @@ def train_network():
     # get amount of pitch names
     n_vocab = len(set(notes))
     
-    # toDo: hieronder gaat iets mis
+    # ToDo: hieronder gaat iets mis
     network_input, network_output = prepare_sequences(notes, n_vocab)
 
     model = create_network(network_input, n_vocab)
