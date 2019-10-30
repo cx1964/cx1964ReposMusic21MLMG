@@ -8,26 +8,31 @@ import glob
 import pickle
 import numpy
 from music21 import converter, instrument, note, chord
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import LSTM
-from keras.layers import Activation
+
+from tensorflow.keras.models import Sequential # tensorflow v2
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import LSTM
+from tensorflow.keras.layers import Activation
 from keras.utils import np_utils
-from keras.callbacks import ModelCheckpoint
+from tensorflow.keras.callbacks import ModelCheckpoint
+
+homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
 def train_network():
     """ Train a Neural Network to generate music """
     notes = get_notes()
-
+    
     # get amount of pitch names
     n_vocab = len(set(notes))
-
+    
+    # toDo: hieronder gaat iets mis
     network_input, network_output = prepare_sequences(notes, n_vocab)
 
     model = create_network(network_input, n_vocab)
 
     train(model, network_input, network_output)
+
 
 def get_notes():
     """ Get all the notes and chords from the midi files in the ./midi_songs directory """
@@ -52,7 +57,7 @@ def get_notes():
             elif isinstance(element, chord.Chord):
                 notes.append('.'.join(str(n) for n in element.normalOrder))
 
-    with open('data/notes', 'wb') as filepath:
+    with open(homeDir+'data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
 
     return notes # return een list of notes. Offset informatie (=tijd) gaat verloren
@@ -88,13 +93,15 @@ def prepare_sequences(notes, n_vocab):
 
     # reshape the input into a format compatible with LSTM layers
     network_input = numpy.reshape(network_input, (n_patterns, sequence_length, 1))
-    
+ 
     # normalize input
     network_input = network_input / float(n_vocab)
 
+    # ToDo: Hierondre gaat iets het mis
     network_output = np_utils.to_categorical(network_output)
 
     return (network_input, network_output) # return input en output list met mapped notes
+
 
 def create_network(network_input, n_vocab):
     """ create the structure of the neural network """
@@ -118,13 +125,30 @@ def create_network(network_input, n_vocab):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    filepath = "weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
+
+    # Zie artikel Jason Brownlee 2 methoden mbt leerproces tav veiligstellen van de
+    # gewichten in een hdf5 file obv ModelCheckpoint.
+    # zie Deep Learning With Python
+    #     Develop Deep Learning Models on
+    #     Theano and TensorFlow using Keras
+    #     Jason Brownlee
+    # Zie pagina 96 van pdf
+
+    # methode1: creeer meerder hdf5 files
+    # filepath = "weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
+
+    # methode2: creeer een hdf5 file
+    # Zie pagina 95 - 96 van pdf (14.3 Checkpoint best Neural Network Model only)
+    filepath = "weights-best.hdf5"
+
+    # Zie ook paragraaf 14.2 en 14.3
+    # mbt gebruik parameters (monitor='val_acc' and  mode='max') pagina 94 - 96
     checkpoint = ModelCheckpoint(
         filepath,
         monitor='loss',
         verbose=0,
         save_best_only=True,
-        mode='min'
+        mode='max'
     )
     callbacks_list = [checkpoint]
 

@@ -45,7 +45,6 @@ def generate():
     n_vocab = len(set(notes))
 
     network_input, normalized_input = prepare_sequences(notes, pitchnames, n_vocab)
-    # todo: tgv overgang tensorflow 1 ->2 gaat in create_network() wat mis
     model = create_network(normalized_input, n_vocab)
     prediction_output = generate_notes(model, network_input, pitchnames, n_vocab)
     create_midi(prediction_output)
@@ -105,9 +104,17 @@ def create_network(network_input, n_vocab):
     print("Tot hier OK1 en geen fout melding")
     # Load the weights to each node
 
-    #model.load_weights(homeDir+'weights.hdf5') # Deze regel creeert een fout
-    # Zie artikel Jason Brownlee mbt 2 methode mbt leerproces tav veiligstellen van de gewichten in een hdf5 file
-    model.load_weights(homeDir+'weights-improvement-01-3.7268-bigger.hdf5')
+    # Zie artikel Jason Brownlee mbt 2 methode mbt leerproces tav
+    # veiligstellen van de gewichten in een hdf5 file
+    # Zie hoofdstuk 14.
+    # zie Deep Learning With Python
+    #     Develop Deep Learning Models on
+    #     Theano and TensorFlow using Keras
+    #     Jason Brownlee
+    #
+    # Zie pagina 96 van pdf
+    # model.load_weights(homeDir+'weights-improvement-01-3.7268-bigger.hdf5')
+    model.load_weights(homeDir+'weights-best.hdf5')
     print("OK final: create_network()")
     return model
 
