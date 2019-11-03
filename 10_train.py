@@ -6,16 +6,14 @@
     network for training """
 import glob
 import pickle
-import numpy
-from music21 import converter, instrument, note, chord
 
-from tensorflow.keras.models import Sequential # tensorflow v2
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
-from tensorflow.keras.layers import LSTM
-from tensorflow.keras.layers import Activation
-from keras.utils import np_utils
+import numpy
+
+from music21 import chord, converter, instrument, note
 from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras.layers import LSTM, Activation, Dense, Dropout
+from tensorflow.keras.models import Sequential  # tensorflow v2
+from tensorflow.keras.utils import utils
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
@@ -97,8 +95,11 @@ def prepare_sequences(notes, n_vocab):
     # normalize input
     network_input = network_input / float(n_vocab)
 
-    # ToDo: Hierondre gaat iets het mis
-    network_output = np_utils.to_categorical(network_output)
+    # ToDo: Hieronder gaat iets het mis
+    # Converts a class vector (integers) to binary class matrix
+    # See https://www.tensorflow.org/api_docs/python/tf/keras/utils
+    print("network_output:",network_output )
+    network_output = utils.to_categorical(network_output)
 
     return (network_input, network_output) # return input en output list met mapped notes
 
@@ -139,10 +140,12 @@ def train(model, network_input, network_output):
 
     # methode2: creeer een hdf5 file
     # Zie pagina 95 - 96 van pdf (14.3 Checkpoint best Neural Network Model only)
+    # De file waarin tgv het checkpoint process tijdens de leerfase de weights in worden weggeschreven.
     filepath = "weights-best.hdf5"
 
     # Zie ook paragraaf 14.2 en 14.3
     # mbt gebruik parameters (monitor='val_acc' and  mode='max') pagina 94 - 96
+    # Zie https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint
     checkpoint = ModelCheckpoint(
         filepath,
         monitor='loss',
@@ -151,7 +154,7 @@ def train(model, network_input, network_output):
         mode='max'
     )
     callbacks_list = [checkpoint]
-
+    # het leer proces
     model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
 
 if __name__ == '__main__':
