@@ -46,7 +46,7 @@ pip install theano # Dit command geeft foutmelding "Failed building wheel for th
 # zie https://www.tensorflow.org/install/pip
 pip install --upgrade pip # nodig voor tensorflow 2.x install
 pip install tensorflow # CPU package  
-pip install keras
+pip install keras==2.2.0
 # check
 python deep_versions.py
 
