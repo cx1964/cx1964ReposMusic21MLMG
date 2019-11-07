@@ -38,6 +38,17 @@ pip install matplotlib
 pip install pandas
 pip install statsmodels
 pip install sklearn # Dit command geeft foutmelding "Failed building wheel for sklearn", wat genegeerd kan worden
+python versions.py
 
-# nog insatlleren deep learning packages zie ... https://machinelearningmastery.com/setup-python-environment-machine-learning-deep-learning-anaconda/
-# dit commentaar aanpassen na installatie
+#  Install deep learning packages zie paragraaf 5 van https://machinelearningmastery.com/setup-python-environment-machine-learning-deep-learning-anaconda/
+#!!! vergeet niet eerst mbv source env_python3_ml/bin/activate de environment goed te zetten voordat men resterende ML deep learning pkgs gaat installeren
+pip install theano # Dit command geeft foutmelding "Failed building wheel for theano", wat genegeerd kan worden
+# zie https://www.tensorflow.org/install/pip
+pip install --upgrade pip # nodig voor tensorflow 2.x install
+pip install tensorflow # CPU package  
+pip install keras
+# check
+python deep_versions.py
+
+# show all installed python3 packages
+pip list
