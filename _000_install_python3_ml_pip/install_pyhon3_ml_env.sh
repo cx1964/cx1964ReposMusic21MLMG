@@ -50,5 +50,8 @@ pip install keras
 # check
 python deep_versions.py
 
+# isntall MIT music21 packages
+pip install music21
+
 # show all installed python3 packages
 pip list
