@@ -12,8 +12,8 @@ import numpy
 from music21 import chord, converter, instrument, note
 import tensorflow as tf
 # from keras.callbacks import ModelCheckpoint # tensorflow v1
-from keras.layers import LSTM, Activation, Dense, Dropout # tensorflow v1
-from keras.models import Sequential  # tensorflow v1
+# from keras.layers import LSTM, Activation, Dense, Dropout # tensorflow v1
+# from keras.models import Sequential  # tensorflow v1
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
@@ -25,9 +25,7 @@ def train_network():
     # get amount of pitch names
     n_vocab = len(set(notes))
     
-    # ToDo: hieronder gaat iets mis
     network_input, network_output = prepare_sequences(notes, n_vocab)
-
     model = create_network(network_input, n_vocab)
 
     train(model, network_input, network_output)
@@ -107,21 +105,44 @@ def prepare_sequences(notes, n_vocab):
 
 def create_network(network_input, n_vocab):
     """ create the structure of the neural network """
-    model = Sequential()
-    model.add(LSTM(
-        512,
-        input_shape=(network_input.shape[1], network_input.shape[2]),
-        return_sequences=True
-    ))
-    model.add(Dropout(0.3))
-    model.add(LSTM(512, return_sequences=True))
-    model.add(Dropout(0.3))
-    model.add(LSTM(512))
-    model.add(Dense(256))
-    model.add(Dropout(0.3))
-    model.add(Dense(n_vocab))
-    model.add(Activation('softmax'))
+    # Zie orginele definitie create_network
+    # https://towardsdatascience.com/how-to-generate-music-using-a-lstm-neural-network-in-keras-68786834d4c5
+    # https://github.com/Skuldur/Classical-Piano-Composer
+
+    # zie alternatief https://adgefficiency.com/tf2-lstm-hidden/
+ 
+    # ToDo: uitzoeken betekenis argumenten tf.keras.layers.LSTM call
+    #       aanleiding melding tijdens trainen invalid argument
+    #       kan ook bij code zitten die training op start (zie verder)
+
+    # Uit artikel mbt input_shape in onderstaande tf.keras.layers.LSTM(
+    # For the first layer we have to provide a 
+    # unique parameter called input_shape. The purpose of the parameter is
+    # to inform the network of the shape of the data it will be training.
+    # Geldt ook voor tensorflow v2 ????
+
+    # model = Sequential() # tensorflow v1
+    model = tf.keras.models.Sequential([  # tensorflow v2
+      tf.keras.layers.LSTM(
+        # 512, orgineel tf v1
+        512, # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
+        input_shape=(network_input.shape[1], network_input.shape[2]), ## zie artikel. Geldt dit ik ook voor v2?
+        return_sequences=True # also tensorflow v2 LSTM argument
+      ),
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.LSTM(512, return_sequences=True),
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.LSTM(512),
+      tf.keras.layers.Dense(256),
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.Dense(n_vocab),
+      tf.keras.layers.Activation('softmax')
+    ])
+
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+ 
+    # show used model
+    model.summary()
 
     return model
 
@@ -160,4 +181,7 @@ def train(model, network_input, network_output):
     model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
 
 if __name__ == '__main__':
+    print("Tensorflow version: ", tf.__version__)
+    print("Eager execution running: ", tf.executing_eagerly())
+    print("keras version: ", tf.keras.__version__)
     train_network()
