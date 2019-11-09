@@ -58,6 +58,7 @@ pip install music21
 
 # install pylint for Microsoft Visual Code
 pip install pylint
+pip install -U bandit --user
 
 # show all installed python3 packages
 pip list
