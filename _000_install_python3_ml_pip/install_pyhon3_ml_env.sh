@@ -13,6 +13,7 @@ python3 -m pip install --user --upgrade pip
 python3 -m pip --version
 
 # Installing virtualenv
+cd ~/Documents
 python3 -m pip install --user virtualenv
 
 #Creating a virtual environment
