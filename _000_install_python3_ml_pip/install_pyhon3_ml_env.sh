@@ -46,13 +46,18 @@ python versions.py
 pip install theano # Dit command geeft foutmelding "Failed building wheel for theano", wat genegeerd kan worden
 # zie https://www.tensorflow.org/install/pip
 pip install --upgrade pip # nodig voor tensorflow 2.x install
-pip install tensorflow # CPU package  
+pip install tensorflow==2.2.0 # CPU package  
 pip install keras==2.2.0
+pip install --upgrade tensorflow
+pip install --upgrade keras
 # check
 python deep_versions.py
 
-# isntall MIT music21 packages
+# install MIT music21 packages
 pip install music21
+
+# install pylint for Microsoft Visual Code
+pip install pylint
 
 # show all installed python3 packages
 pip list
