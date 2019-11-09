@@ -14,8 +14,7 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import LSTM, Activation, Dense, Dropout
 from tensorflow.keras.models import Sequential  # tensorflow v2
-#from tensorflow.keras.utils import utils
-# tf.tensorflow.keras.utils 
+#from tensorflow.keras.utils import utils # this does not work use tf.keras.utils.<function> as call
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
