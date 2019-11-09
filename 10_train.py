@@ -11,10 +11,10 @@ import numpy
 
 from music21 import chord, converter, instrument, note
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow.keras.layers import LSTM, Activation, Dense, Dropout
-from tensorflow.keras.models import Sequential  # tensorflow v2
-#from tensorflow.keras.utils import utils # this does not work use tf.keras.utils.<function> as call
+# from keras.callbacks import ModelCheckpoint # tensorflow v1
+from keras.layers import LSTM, Activation, Dense, Dropout # tensorflow v1
+from keras.models import Sequential  # tensorflow v1
+# from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
@@ -96,14 +96,13 @@ def prepare_sequences(notes, n_vocab):
     # normalize input
     network_input = network_input / float(n_vocab)
 
-    # ToDo: Hieronder gaat iets het mis
+    print("network_output:",network_output )
     # Converts a class vector (integers) to binary class matrix
     # See https://www.tensorflow.org/api_docs/python/tf/keras/utils
-    print("network_output:",network_output )
     #network_output = utils.to_categorical(network_output) # tbv tf 1
     network_output = tf.keras.utils.to_categorical(network_output) # tf v2
 
-    return (network_input, network_output) # return input en output list met mapped notes
+    return (network_input, network_output) # return input and output list with mapped notes
 
 
 def create_network(network_input, n_vocab):
@@ -137,7 +136,7 @@ def train(model, network_input, network_output):
     #     Jason Brownlee
     # Zie pagina 96 van pdf
 
-    # methode1: creeer meerder hdf5 files
+    # methode1: creeer meerdere hdf5 files
     # filepath = "weights-improvement-{epoch:02d}-{loss:.4f}-bigger.hdf5"
 
     # methode2: creeer een hdf5 file
@@ -148,7 +147,8 @@ def train(model, network_input, network_output):
     # Zie ook paragraaf 14.2 en 14.3
     # mbt gebruik parameters (monitor='val_acc' and  mode='max') pagina 94 - 96
     # Zie https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint
-    checkpoint = ModelCheckpoint(
+    # checkpoint = ModelCheckpoint( # tensorfow v1
+    checkpoint = tf.keras.callbacks.ModelCheckpoint(  # tensorflow v2    
         filepath,
         monitor='loss',
         verbose=0,
