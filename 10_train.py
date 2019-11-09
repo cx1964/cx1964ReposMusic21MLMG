@@ -1,6 +1,6 @@
 # Filename: 10_train.py
 # Functie: script te train the network
-# Remark: Intial source based on Tensorflow v1 usage
+# Remark: Initial source based on Tensorflow v1 usage
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
@@ -10,10 +10,12 @@ import pickle
 import numpy
 
 from music21 import chord, converter, instrument, note
+import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import LSTM, Activation, Dense, Dropout
 from tensorflow.keras.models import Sequential  # tensorflow v2
-from tensorflow.keras.utils import utils
+#from tensorflow.keras.utils import utils
+# tf.tensorflow.keras.utils 
 
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 
@@ -99,7 +101,8 @@ def prepare_sequences(notes, n_vocab):
     # Converts a class vector (integers) to binary class matrix
     # See https://www.tensorflow.org/api_docs/python/tf/keras/utils
     print("network_output:",network_output )
-    network_output = utils.to_categorical(network_output)
+    #network_output = utils.to_categorical(network_output) # tbv tf 1
+    network_output = tf.keras.utils.to_categorical(network_output) # tf v2
 
     return (network_input, network_output) # return input en output list met mapped notes
 

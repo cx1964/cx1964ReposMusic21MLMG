@@ -2,7 +2,8 @@
     "python.venvFolders": [
         "Documents"
     ],
-    "python.linting.pylintEnabled": true,
+    "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
-    "python.pythonPath": "/home/claude/Documents/env_python3_ml/bin/python"
+    "python.pythonPath": "/home/claude/Documents/env_python3_ml/bin/python",
+    "python.linting.banditEnabled": true
 }
