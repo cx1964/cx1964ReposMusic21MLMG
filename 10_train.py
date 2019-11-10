@@ -16,7 +16,10 @@ import tensorflow as tf
 # from keras.models import Sequential  # tensorflow v1
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
+# homeDir when this script is used from my Laptop
 homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+# homeDir when this script is used from my Virtualbox Linux VM
+#homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 
 def train_network():
     """ Train a Neural Network to generate music """
@@ -35,7 +38,7 @@ def get_notes():
     """ Get all the notes and chords from the midi files in the ./midi_songs directory """
     notes = []
 
-    for file in glob.glob("midi_songs/*.mid"):
+    for file in glob.glob(homeDir+"midi_songs/*.mid"):
         midi = converter.parse(file)
 
         print("Parsing %s" % file)
