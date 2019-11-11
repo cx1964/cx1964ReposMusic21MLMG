@@ -2,6 +2,21 @@
 # Functie: script te train the network
 # Remark: Initial source based on Tensorflow v1 usage
 
+# To run tensorflow for cpu and Ubuntu Linux platform
+# you can use prebuild tensorflow package.
+# You have to manually build the tensorflow package.
+# Prebuild tenosrflow package on Linux 
+# gives a runtime warning about CPU extentions AVX2, FMA.
+# See article https://stackoverflow.com/questions/47068709/your-cpu-supports-instructions-that-this-tensorflow-binary-was-not-compiled-to-u
+#
+# Build a TensorFlow pip package from source and install it on Ubuntu Linux and macOS
+# See https://www.tensorflow.org/install/source
+
+# See https://docs.bazel.build/versions/master/install.html
+# See https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
+# See http://bazel.build/docs/getting-started.html to start a new project!
+
+
 """ This module prepares midi file data and feeds it to the neural
     network for training """
 import glob
