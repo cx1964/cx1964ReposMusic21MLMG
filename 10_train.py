@@ -16,6 +16,24 @@
 # See https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
 # See http://bazel.build/docs/getting-started.html to start a new project!
 
+# used commands to install:
+# download bazel install script # see https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
+# install bazel install script with
+# chmod +x bazel-<version>-installer-linux-x86_64.sh
+# ./bazel-<version>-installer-linux-x86_64.sh --user
+# cd <project directory> 
+# without a git respository
+# git clone https://github.com/tensorflow/tensorflow.git
+# with a git repository
+# git submodule add https://github.com/tensorflow/tensorflow.git
+# cd tensorflow
+# for release 2.0 tensorflow
+# git checkout r2.0
+# ./configure
+# build tensorflow package. Beware to use the correct command depending on with version
+# bazel build //tensorflow/tools/pip_package:build_pip_package
+# Install the package
+# pip install /tmp/tensorflow_pkg/tensorflow-version-tags.whl
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
