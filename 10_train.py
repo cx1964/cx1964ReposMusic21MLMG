@@ -32,8 +32,15 @@
 # ./configure
 # build tensorflow package. Beware to use the correct command depending on with version
 # bazel build //tensorflow/tools/pip_package:build_pip_package
-# Install the package
-# pip install /tmp/tensorflow_pkg/tensorflow-version-tags.whl
+# create wheel file in /tmp/tensorflow_pkg
+# bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+# Install the package tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
+# pip install /tmp/tensorflow_pkg/tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
+
+# Info after successful build of release r2.0
+# INFO: Elapsed time: 11160.249s, Critical Path: 239.71s
+# INFO: 17804 processes: 17804 local.
+# INFO: Build completed successfully, 18538 total actions
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
