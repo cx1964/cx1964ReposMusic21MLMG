@@ -1,11 +1,16 @@
-# filename: setup.sh
-# function: build Linux library to build tensorflow 2.x pip package for specific CPU
+# Filename: setup.sh
+# Function: build Linux libraries to build tensorflow 2.x pip package for specific CPU
+#           Original build procedure
+#           of https://intel.github.io/mkl-dnn/dev_guide_build.html
+#           changed 2019115, because it did not work on my Linux platform
+#
+#           This script install created libraries in /usr/local/*
+# 
+# Howto use this script: Put this file (setup.sh) in an empty directory
+#                        After this script has run, a separte directory mkl-dnn is created
+#                        Start this script with ./setup.sh from seprate directory
 
-# put this file (setup.sh) in an empty directory
-# After this script has run a seprte directory mkl-dnn is created
-
-# see https://intel.github.io/mkl-dnn/dev_guide_build.html
-# see https://github.com/intel/mkl-dnn
+# Reference documentation see https://github.com/intel/mkl-dnn
 
 # Cmake requirement for Linux Ubuntu 18.04
 sudo apt install build-essential
@@ -36,4 +41,4 @@ make
 # make doc
 
 # Install the library, headers, and documentation: 
-make install
+sudo make install
