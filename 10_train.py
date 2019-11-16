@@ -29,6 +29,8 @@
 # cd tensorflow
 # for release 2.0 tensorflow
 # git checkout r2.0
+# See https://www.tensorflow.org/install/source for options asked when ./configure is ran.
+# To "specify optimization flags" use --config=mkl to use mkl-dnn library build with ./mkl-dnn-setup/setup.sh
 # ./configure
 # build tensorflow package. Beware to use the correct command depending on with version
 # bazel build //tensorflow/tools/pip_package:build_pip_package
