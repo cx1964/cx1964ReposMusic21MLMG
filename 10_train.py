@@ -16,6 +16,10 @@
 # See https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
 # See http://bazel.build/docs/getting-started.html to start a new project!
 
+# Install required packages before install eand run bazel
+# run script pip_install_before_bazel_install.sh
+# ./before_bazel_install/pip_install_before_bazel_install.sh
+
 # used commands to install:
 # download bazel install script # see https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
 # install bazel install script with
