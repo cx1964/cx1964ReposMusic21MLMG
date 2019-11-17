@@ -1,6 +1,7 @@
 # Filename: 10_train.py
 # Functie: script te train the network
 # Remark: Initial source based on Tensorflow v1 usage
+# Version 2 20191117 changed for tensorflow 2.0
 
 # To run tensorflow for cpu and Ubuntu Linux platform
 # you can use prebuild tensorflow package.
@@ -44,7 +45,9 @@
 # pip install /tmp/tensorflow_pkg/tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
 
 # Info after successful build of release r2.0
-
+# INFO: Elapsed time: 11160.249s, Critical Path: 239.71s
+# INFO: 17804 processes: 17804 local.
+# INFO: Build completed successfully, 18538 total actions
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
