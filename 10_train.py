@@ -16,6 +16,10 @@
 # See https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
 # See http://bazel.build/docs/getting-started.html to start a new project!
 
+# Install required packages before install eand run bazel
+# run script pip_install_before_bazel_install.sh
+# ./before_bazel_install/pip_install_before_bazel_install.sh
+
 # used commands to install:
 # download bazel install script # see https://docs.bazel.build/versions/master/install-ubuntu.html#install-with-installer-ubuntu
 # install bazel install script with
@@ -29,6 +33,8 @@
 # cd tensorflow
 # for release 2.0 tensorflow
 # git checkout r2.0
+# See https://www.tensorflow.org/install/source for options asked when ./configure is ran.
+# To "specify optimization flags" use --config=mkl to use mkl-dnn library build with ./mkl-dnn-setup/setup.sh
 # ./configure
 # build tensorflow package. Beware to use the correct command depending on with version
 # bazel build //tensorflow/tools/pip_package:build_pip_package
@@ -38,9 +44,7 @@
 # pip install /tmp/tensorflow_pkg/tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
 
 # Info after successful build of release r2.0
-# INFO: Elapsed time: 11160.249s, Critical Path: 239.71s
-# INFO: 17804 processes: 17804 local.
-# INFO: Build completed successfully, 18538 total actions
+
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
