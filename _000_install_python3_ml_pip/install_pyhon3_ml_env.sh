@@ -45,11 +45,9 @@ python versions.py
 #!!! vergeet niet eerst mbv source env_python3_ml/bin/activate de environment goed te zetten voordat men resterende ML deep learning pkgs gaat installeren
 pip install theano # Dit command geeft foutmelding "Failed building wheel for theano", wat genegeerd kan worden
 # zie https://www.tensorflow.org/install/pip
-pip install --upgrade pip # nodig voor tensorflow 2.x install
-pip install tensorflow==2.2.0 # CPU package  
-pip install keras==2.2.0
-pip install --upgrade tensorflow
-pip install --upgrade keras
+pip install keras
+# pip install tensorflow # install manual build package create with bazel 
+
 # check
 python deep_versions.py
 
