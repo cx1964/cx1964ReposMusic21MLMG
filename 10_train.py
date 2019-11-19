@@ -38,11 +38,12 @@
 # To "specify optimization flags" use --config=mkl to use mkl-dnn library build with ./mkl-dnn-setup/setup.sh
 # ./configure
 # build tensorflow package. Beware to use the correct command depending on with version
-# bazel build //tensorflow/tools/pip_package:build_pip_package --local_ram_resources=4096
-# create wheel file in /tmp/tensorflow_pkg
-# bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+# bazel build //tensorflow/tools/pip_package:build_pip_package --local_ram_resources=8192
+# create wheel file in ~/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/tensorflow_pkg
+# run build_pip_package from ./tensorflow directory
+# bazel-bin/tensorflow/tools/pip_package/build_pip_package ~/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/tensorflow_pkg
 # Install the package tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
-# pip install /tmp/tensorflow_pkg/tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
+# pip install ~/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/tensorflow_pkg/tensorflow-2.0.0-cp36-cp36m-linux_x86_64.whl
 
 # Info after successful build of release r2.0
 # INFO: Elapsed time: 11160.249s, Critical Path: 239.71s
