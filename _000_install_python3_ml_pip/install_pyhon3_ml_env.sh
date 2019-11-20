@@ -46,7 +46,10 @@ python versions.py
 pip install theano # Dit command geeft foutmelding "Failed building wheel for theano", wat genegeerd kan worden
 # zie https://www.tensorflow.org/install/pip
 pip install keras
-# pip install tensorflow # install manual build package create with bazel 
+# prebuild tensorflow 2.0 requires pip => 19.0
+pip install --upgrade pip
+pip install 'tensorflow==2.0.0'
+# or install manual build tensorflow 2.x package create with bazel -- procedure in 10_train.py
 
 # check
 python deep_versions.py
