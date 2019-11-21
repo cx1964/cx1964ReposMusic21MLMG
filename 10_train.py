@@ -184,10 +184,14 @@ def create_network(network_input, n_vocab):
       tf.keras.layers.LSTM(512, return_sequences=True),
       tf.keras.layers.Dropout(0.3),
       tf.keras.layers.LSTM(512),
-      tf.keras.layers.Dense(256),
+      tf.keras.layers.Dense(256), # For tf 2.0
+                                  # activation: Activation function to use.
+                                  # If you don't specify anything,
+                                  # no activation is applied (ie. "linear" activation: a(x) = x).
+                                  # check if this also valid voor tf 1.0
       tf.keras.layers.Dropout(0.3),
-      tf.keras.layers.Dense(n_vocab),
-      tf.keras.layers.Activation('softmax')
+      tf.keras.layers.Dense(n_vocab, activation=tf.nn.softmax)
+      #tf.keras.layers.Activation('softmax') # This is move to previous line
     ])
 
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
