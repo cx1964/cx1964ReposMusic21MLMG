@@ -193,6 +193,8 @@ def create_network(network_input, n_vocab):
       tf.keras.layers.Dense(n_vocab, activation=tf.nn.softmax)
       #tf.keras.layers.Activation('softmax') # This is move to previous line
     ])
+    # ToDo: Zit de fout wel hier? en niet pas na model.summary()
+    #       waar wordt de optimalisatie gedaan ??
 
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
  
@@ -236,7 +238,9 @@ def train(model, network_input, network_output):
     model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
 
 if __name__ == '__main__':
-    print("Tensorflow version: ", tf.__version__)
+    print("tf.version.VERSION: ", tf.version.VERSION)
+    print("tf.version.GIT_VERSION: ", tf.version.GIT_VERSION)    
+
     print("Eager execution running: ", tf.executing_eagerly())
     print("keras version: ", tf.keras.__version__)
     train_network()
