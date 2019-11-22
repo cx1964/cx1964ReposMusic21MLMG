@@ -112,8 +112,11 @@ def create_network(network_input, n_vocab):
     #model.add(Dense(n_vocab))
     #model.add(Activation('softmax'))
     
-    model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-    
+    #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+    model.compile(optimizer=tf.keras.optimizers.RMSprop(),  # Optimizer
+                  loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
+                 )
+
     # Visualize Model
     print(model.summary())
     #plot_model(model, to_file=homeDir+'model_plot.png', show_shapes=True, show_layer_names=True)

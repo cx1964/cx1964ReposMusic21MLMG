@@ -1,5 +1,5 @@
 # Filename: 10_train.py
-# Functie: script te train the network
+# Function: script te train the network
 # Remark: Initial source based on Tensorflow v1 usage
 # Version 2 20191117 changed for tensorflow 2.0
 
@@ -145,7 +145,7 @@ def prepare_sequences(notes, n_vocab):
     # normalize input
     network_input = network_input / float(n_vocab)
 
-    print("network_output:",network_output )
+    #print("network_output:",network_output )
     # Converts a class vector (integers) to binary class matrix
     # See https://www.tensorflow.org/api_docs/python/tf/keras/utils
     #network_output = utils.to_categorical(network_output) # tbv tf 1
@@ -196,8 +196,12 @@ def create_network(network_input, n_vocab):
     # ToDo: Zit de fout wel hier? en niet pas na model.summary()
     #       waar wordt de optimalisatie gedaan ??
 
-    model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
- 
+    #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+    model.compile(optimizer=tf.keras.optimizers.RMSprop(),  # Optimizer
+                  loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
+                 )
+    print("Na compile")
+
     # show used model
     model.summary()
 
@@ -235,7 +239,9 @@ def train(model, network_input, network_output):
     )
     callbacks_list = [checkpoint]
     # het leer proces
+    ## ToDo hier probleem??
     model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
+    print("na model.fit")
 
 if __name__ == '__main__':
     print("tf.version.VERSION: ", tf.version.VERSION)
