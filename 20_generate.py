@@ -11,7 +11,8 @@ from music21 import instrument, note, stream, chord
 # because of tensorflow v2 usage change all 
 # "from keras.*" expressions 
 # into "from tensorflow.keras.*" expressions
-from tensorflow.keras.models import Sequential # tensorflow v2
+
+import tensorflow as tf
 # from keras.models import Sequential # tensorflow v1
 
 # When using from keras.models import Sequential with tensorflow
@@ -79,27 +80,50 @@ def create_network(network_input, n_vocab):
     #  see keras tensorflow v2 documentation https://www.tensorflow.org/api_docs/python/tf/keras/Sequential
     print("OK1 for create_network() Sequential()")
     # create_network
-    model = Sequential() # this also works for tensorflow v2
-    model.add(LSTM(
-        512,
-        input_shape=(network_input.shape[1], network_input.shape[2]),
-        return_sequences=True
-    ))
-    model.add(Dropout(0.3))
-    model.add(LSTM(512, return_sequences=True))
-    model.add(Dropout(0.3))
-    model.add(LSTM(512))
-    model.add(Dense(256))
-    model.add(Dropout(0.3))
-    model.add(Dense(n_vocab))
-    model.add(Activation('softmax'))
+    model = tf.keras.models.Sequential([  # tensorflow v2
+      tf.keras.layers.LSTM(
+        # 512, orgineel tf v1
+        512, # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
+        input_shape=(network_input.shape[1], network_input.shape[2]), ## zie artikel. Geldt dit ik ook voor v2?
+        return_sequences=True # also tensorflow v2 LSTM argument
+      ),
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.LSTM(512, return_sequences=True),
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.LSTM(512),
+      tf.keras.layers.Dense(256), # For tf 2.0
+                                  # activation: Activation function to use.
+                                  # If you don't specify anything,
+                                  # no activation is applied (ie. "linear" activation: a(x) = x).
+                                  # check if this also valid voor tf 1.0
+      tf.keras.layers.Dropout(0.3),
+      tf.keras.layers.Dense(n_vocab, activation=tf.nn.softmax)
+      #tf.keras.layers.Activation('softmax') # This is move to previous line
+    ])
+
+
+    # tf v1 def
+    #model = tf.keras.Sequential() 
+    #model.add(LSTM(
+    #    512,
+    #    input_shape=(network_input.shape[1], network_input.shape[2]),
+    #    return_sequences=True
+    #))
+    #model.add(Dropout(0.3))
+    #model.add(LSTM(512, return_sequences=True))
+    #model.add(Dropout(0.3))
+    #model.add(LSTM(512))
+    #model.add(Dense(256))
+    #model.add(Dropout(0.3))
+    #model.add(Dense(n_vocab))
+    #model.add(Activation('softmax'))
     
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
     
     # Visualize Model
     print(model.summary())
-    plot_model(model, to_file=homeDir+'model_plot.png', show_shapes=True, show_layer_names=True)
-    print("See: model_plot.png")
+    #plot_model(model, to_file=homeDir+'model_plot.png', show_shapes=True, show_layer_names=True)
+    #print("See: model_plot.png")
 
     print("Tot hier OK1 en geen fout melding")
     # Load the weights to each node
