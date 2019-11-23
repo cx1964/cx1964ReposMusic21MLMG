@@ -198,7 +198,8 @@ def create_network(network_input, n_vocab):
 
     #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
     model.compile(optimizer=tf.keras.optimizers.RMSprop(),  # Optimizer
-                  loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
+                  loss=tf.keras.losses.CategoricalCrossentropy(), # Loss function to minimize
+                  metrics=['accuracy'] # added
                  )
     print("Na compile")
 
