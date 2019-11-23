@@ -193,7 +193,8 @@ def create_network(network_input, n_vocab):
       tf.keras.layers.Dense(n_vocab, activation=tf.nn.softmax)
       #tf.keras.layers.Activation('softmax') # This is move to previous line
     ])
-    # ToDo: Zit de fout wel hier? en niet pas na model.summary()
+    
+    # ToDo: fout heeft iets te maken met model.compile
     #       waar wordt de optimalisatie gedaan ??
 
     #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
