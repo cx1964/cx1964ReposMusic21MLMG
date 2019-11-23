@@ -161,10 +161,6 @@ def create_network(network_input, n_vocab):
     # https://github.com/Skuldur/Classical-Piano-Composer
 
     # zie alternatief https://adgefficiency.com/tf2-lstm-hidden/
- 
-    # ToDo: uitzoeken betekenis argumenten tf.keras.layers.LSTM call
-    #       aanleiding melding tijdens trainen invalid argument
-    #       kan ook bij code zitten die training op start (zie verder)
 
     # Uit artikel mbt input_shape in onderstaande tf.keras.layers.LSTM(
     # For the first layer we have to provide a 
@@ -173,34 +169,47 @@ def create_network(network_input, n_vocab):
     # Geldt ook voor tensorflow v2 ????
 
     # model = Sequential() # tensorflow v1
+    
+    # issues "Skipping optimization due to error while loading function libraries: Invalid argument: Functions"
+    #        see https://github.com/tensorflow/tensorflow/issues/30263 
+    #        work arround in all tf.keras.layers.LSTM calls
+    #        change param activation from tf.nn.tanh to None
+    print("This script has Still an issue: ")
+    print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
+    print("https://github.com/tensorflow/tensorflow/issues/30263") 
     model = tf.keras.models.Sequential([  # tensorflow v2
-      tf.keras.layers.LSTM(
-        # 512, orgineel tf v1
-        512, # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
-        input_shape=(network_input.shape[1], network_input.shape[2]), ## zie artikel. Geldt dit ik ook voor v2?
-        return_sequences=True # also tensorflow v2 LSTM argument
-      ),
-      tf.keras.layers.Dropout(0.3),
-      tf.keras.layers.LSTM(512, return_sequences=True),
-      tf.keras.layers.Dropout(0.3),
-      tf.keras.layers.LSTM(512),
-      tf.keras.layers.Dense(256), # For tf 2.0
+       tf.keras.layers.LSTM(
+         # 512, orgineel tf v1
+          512 # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
+         ,input_shape=(network_input.shape[1], network_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
+                                                                       # first layer need this parameter
+         ,return_sequences=True # also tensorflow v2 LSTM argument
+         ,activation=None # see issue. This is a workarround 
+       )
+      ,tf.keras.layers.Dropout(0.3)
+      ,tf.keras.layers.LSTM( 512
+                           ,return_sequences=True
+                           ,activation=None) # see issue. This is a workarround 
+      ,tf.keras.layers.Dropout(0.3)
+      ,tf.keras.layers.LSTM( 512
+                            ,activation=None # see issue. This is a workarround
+                           )
+      ,tf.keras.layers.Dense(256) # For tf 2.0
                                   # activation: Activation function to use.
                                   # If you don't specify anything,
                                   # no activation is applied (ie. "linear" activation: a(x) = x).
                                   # check if this also valid voor tf 1.0
-      tf.keras.layers.Dropout(0.3),
-      tf.keras.layers.Dense(n_vocab, activation=tf.nn.softmax)
+      ,tf.keras.layers.Dropout(0.3)
+      ,tf.keras.layers.Dense( n_vocab
+                             ,activation=tf.nn.softmax
+                            )
       #tf.keras.layers.Activation('softmax') # This is move to previous line
     ])
     
-    # ToDo: fout heeft iets te maken met model.compile
-    #       waar wordt de optimalisatie gedaan ??
-
     #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-    model.compile(optimizer=tf.keras.optimizers.RMSprop(),  # Optimizer
-                  loss=tf.keras.losses.CategoricalCrossentropy(), # Loss function to minimize
-                  metrics=['accuracy'] # added
+    model.compile( optimizer=tf.keras.optimizers.RMSprop()  # Optimizer
+                  ,loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
+                  ,metrics=['accuracy'] # added
                  )
     print("Na compile")
 
