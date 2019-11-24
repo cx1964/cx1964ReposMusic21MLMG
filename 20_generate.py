@@ -90,15 +90,17 @@ def create_network(network_input, n_vocab):
          ,input_shape=(network_input.shape[1], network_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
                                                                        # first layer need this parameter
          ,return_sequences=True # also tensorflow v2 LSTM argument
-         ,activation=None # see issue. This is a workarround 
+         ,activation=tf.nn.tanh# see issue. Use explicitly default value tanh
        )
       ,tf.keras.layers.Dropout(0.3)
       ,tf.keras.layers.LSTM( 512
                            ,return_sequences=True
-                           ,activation=None) # see issue. This is a workarround 
+                           ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
+                           )  
       ,tf.keras.layers.Dropout(0.3)
       ,tf.keras.layers.LSTM( 512
-                            ,activation=None # see issue. This is a workarround
+                            ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
+
                            )
       ,tf.keras.layers.Dense(256) # For tf 2.0
                                   # activation: Activation function to use.
