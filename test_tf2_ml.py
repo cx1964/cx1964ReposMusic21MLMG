@@ -1,7 +1,6 @@
 # File: test_tf2_ml.py
 # Function: working tf 2.0 example
 #           regel1
-#           regel2
 # see https://towardsdatascience.com/building-your-first-neural-network-in-tensorflow-2-tensorflow-for-hackers-part-i-e1e2f1dfe7a0
 
 import tensorflow as tf
