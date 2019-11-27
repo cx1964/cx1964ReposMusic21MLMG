@@ -170,13 +170,11 @@ def create_network(network_input, n_vocab):
 
     # model = Sequential() # tensorflow v1
     
-    # issues "Skipping optimization due to error while loading function libraries: Invalid argument: Functions"
+    # solved issue:
+    #        "Skipping optimization due to error while loading function libraries: Invalid argument: Functions"
     #        see https://github.com/tensorflow/tensorflow/issues/30263 
     #        work arround in all tf.keras.layers.LSTM calls
-    #        change param activation from tf.nn.tanh to None
-    print("This script has Still an issue: ")
-    print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
-    print("https://github.com/tensorflow/tensorflow/issues/30263") 
+    #        use explicitly default activation parm with value tf.nn.tanh
     model = tf.keras.models.Sequential([  # tensorflow v2
        tf.keras.layers.LSTM(
          # 512, orgineel tf v1
@@ -213,7 +211,7 @@ def create_network(network_input, n_vocab):
                   ,loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
                   ,metrics=['accuracy'] # added
                  )
-    print("Na compile")
+    print("After compile")
 
     # show used model
     model.summary()
@@ -251,8 +249,7 @@ def train(model, network_input, network_output):
         mode='max'
     )
     callbacks_list = [checkpoint]
-    # het leer proces
-    ## ToDo hier probleem??
+    # learn process
     model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
     print("na model.fit")
 
