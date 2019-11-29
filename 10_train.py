@@ -114,6 +114,9 @@ def prepare_sequences(notes, n_vocab):
     """ Prepare the sequences used by the Neural Network """
     sequence_length = 100 # voorspel de volgende noot obv 100 voorgaande noten
 
+    # See for anology textGenLSTM.py
+    # See https://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/  
+
     # get all unique pitch names
     pitchnames = sorted(set(item for item in notes))
 
@@ -166,7 +169,6 @@ def create_network(network_input, n_vocab):
     # For the first layer we have to provide a 
     # unique parameter called input_shape. The purpose of the parameter is
     # to inform the network of the shape of the data it will be training.
-    # Geldt ook voor tensorflow v2 ????
 
     # model = Sequential() # tensorflow v1
     

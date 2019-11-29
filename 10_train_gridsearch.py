@@ -131,6 +131,8 @@ def get_notes():
 def prepare_sequences(notes, n_vocab):
     """ Prepare the sequences used by the Neural Network """
     sequence_length = 100 # voorspel de volgende noot obv 100 voorgaande noten
+    # See for anology textGenLSTM.py
+    # See https://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/  
 
     # get all unique pitch names
     pitchnames = sorted(set(item for item in notes))
