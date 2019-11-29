@@ -52,6 +52,7 @@
 
 """ This module prepares midi file data and feeds it to the neural
     network for training """
+
 import glob
 import pickle
 
@@ -68,21 +69,33 @@ from sklearn.model_selection import GridSearchCV
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 # homeDir when this script is used from my Laptop
-homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+#homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+# homeDir old laptop
+homeDir = '/home/claude/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 # homeDir when this script is used from my Virtualbox Linux VM
-#homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
+# homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 
 def train_network():
     """ Train a Neural Network to generate music """
+
+    # get_notes()
+    # see p5 of article
+    # read midi files which gives a list of notes
     notes = get_notes()
     
-    # get amount of pitch names
+    # get amount of unqiue pitch names
     n_vocab = len(set(notes))
+    print("n_vocab = amount of unique pitch names:", n_vocab)
+    print("len notes: ", len(notes))
     
+    # prepare_sequences()
+    # see p6 of article
+    # map notes to numerical data
+    # ToDo: study code from here
     network_input, network_output = prepare_sequences(notes, n_vocab)
     model = create_network(network_input, n_vocab)
 
-    #train(model, network_input, network_output)
+    #train(model, network_input, network_output) : original code
     train(model, network_input, network_output, n_vocab)
 
 def get_notes():
@@ -107,6 +120,8 @@ def get_notes():
                 notes.append(str(element.pitch))
             elif isinstance(element, chord.Chord):
                 notes.append('.'.join(str(n) for n in element.normalOrder))
+
+    print("notes:", notes)
 
     with open(homeDir+'data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
@@ -247,12 +262,12 @@ def train(model, network_input, network_output):
     X=network_input 
     Y=network_output
     grid_result = grid.fit(X, Y)
-    '''
+
     # summarize results
     print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
     for params, mean_score, scores in grid_result.grid_scores_:
         print("%f (%f) with: %r" % (scores.mean(), scores.std(), params))
-    '''
+
     # methode2: creeer een hdf5 file
     # Zie pagina 95 - 96 van pdf (14.3 Checkpoint best Neural Network Model only)
     # De file waarin tgv het checkpoint process tijdens de leerfase de weights in worden weggeschreven.
@@ -266,9 +281,13 @@ def train(model, network_input, network_output):
     print("na model.fit")
 
 if __name__ == '__main__':
-    print("tf.version.VERSION: ", tf.version.VERSION)
-    print("tf.version.GIT_VERSION: ", tf.version.GIT_VERSION)    
 
-    print("Eager execution running: ", tf.executing_eagerly())
+    # tf 2.0
+    #print("tf.version.VERSION: ", tf.version.VERSION)
+    #print("tf.version.GIT_VERSION: ", tf.version.GIT_VERSION)    
+
+    #print("Eager execution running: ", tf.executing_eagerly())
     print("keras version: ", tf.keras.__version__)
+
+    print("start train_network()")
     train_network()
