@@ -134,10 +134,12 @@ def prepare_sequences(notes, n_vocab):
 
     # get all unique pitch names
     pitchnames = sorted(set(item for item in notes))
-
+    print("pitchnames: ", pitchnames)
+    print("hier1")
     # create a dictionary to map pitches to integers
     #        for number, note in enumerate(pitchnames) genereert een reeks met elementen inde vorm <rangnummer>, <pitchname>
     note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
+    print("note_to_int", str(note_to_int))
 
     network_input = []
     network_output = []
