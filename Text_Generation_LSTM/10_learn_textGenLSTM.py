@@ -167,6 +167,8 @@ model.add(Dense( y.shape[1]
 model.compile( loss='categorical_crossentropy'
               ,optimizer='adam'
              )
+# show used model
+model.summary()
 
 # There is no test dataset. We are modeling the entire training dataset to learn the probability
 # of each character in a sequence.
@@ -184,7 +186,8 @@ model.compile( loss='categorical_crossentropy'
 # the next section.
 
 # *** define the checkpoint ***
-filepath="weights-improvement-{epoch:02d}-{loss:.4f}.hdf5"
+# filepath="weights-improvement-{epoch:02d}-{loss:.4f}.hdf5"
+filepath="weights-best.hdf5"
 checkpoint = ModelCheckpoint( filepath
                               ,monitor='loss'
                               ,verbose=1
