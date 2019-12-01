@@ -205,8 +205,10 @@ text afmaken
 # decrease the batch size from 128 to 64 to give the network more of an
 # opportunity to be updated and learn.
 #
-# The full code listing is presented below for completeness.
+#
 
+# The full code listing is presented below for completeness.
+'''
 # Below code is only to create a weights-best.hdf5 weights file
 print("if below code is finish comment out")
 print("create a weights-best.hdf5 weights file")
@@ -282,7 +284,8 @@ model.fit( X
          )
 print("Comment out, above code")
 print("Save weights file weights-best.hdf5")
-print("Code below with weights-best.hdf5")		   
+print("Code below with weights-best.hdf5")	
+'''	   
 #		 
 # Running this example takes some time, at least 700 seconds per epoch.
 #
@@ -306,6 +309,8 @@ print("Code below with weights-best.hdf5")
 # The full code listing is provided below for completeness.
 #
 # ### Load Larger LSTM network and generate text ###
+# Attention: weights-best.hdf5 file is created with code block above
+# and NOT below !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 import sys
 import numpy
 from keras.models import Sequential
