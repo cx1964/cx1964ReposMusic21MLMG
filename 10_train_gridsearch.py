@@ -69,9 +69,9 @@ from sklearn.model_selection import GridSearchCV
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 # homeDir when this script is used from my Laptop
-#homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 # homeDir old laptop
-homeDir = '/home/claude/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
+#homeDir = '/home/claude/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 # homeDir when this script is used from my Virtualbox Linux VM
 # homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 
@@ -96,7 +96,8 @@ def train_network():
     model = create_network(network_input, n_vocab)
 
     #train(model, network_input, network_output) : original code
-    train(model, network_input, network_output, n_vocab)
+    #train(model, network_input, network_output, n_vocab)
+    train(model=model, network_input=network_input, network_output=network_output, network_n_vocab=n_vocab)
 
 def get_notes():
     """ Get all the notes and chords from the midi files in the ./midi_songs directory """
@@ -176,7 +177,12 @@ def prepare_sequences(notes, n_vocab):
     return (network_input, network_output) # return input and output list with mapped notes
 
 # ToDo
-def create_network(network_input, n_vocab):
+def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
+    # Create wrapper for create_network because of KerasClassifier create_network needs parameter ntwrk_n_vocab
+    # https://stackoverflow.com/questions/40393629/how-to-pass-a-parameter-to-scikit-learn-keras-model-function
+    # See also https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/
+
+
     # This Function is used to create model, required for KerasClassifier
     # This function must be transformed to somethink like  def create_model(optimizer= rmsprop , init= glorot_uniform ):
     # p60 pdf Jason Brownlee Deep Learning with python
@@ -204,58 +210,63 @@ def create_network(network_input, n_vocab):
     print("This script has Still an issue: ")
     print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
     print("https://github.com/tensorflow/tensorflow/issues/30263") 
-    model = tf.keras.models.Sequential([  # tensorflow v2
-       tf.keras.layers.LSTM(
-         # 512, orgineel tf v1
-          512 # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
-         ,input_shape=(network_input.shape[1], network_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
-                                                                       # first layer need this parameter
-         ,return_sequences=True # also tensorflow v2 LSTM argument
-         ,activation=tf.nn.tanh# see issue. Use explicitly default value tanh
-       )
-      ,tf.keras.layers.Dropout(0.3)
-      ,tf.keras.layers.LSTM( 512
-                           ,return_sequences=True
-                           ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
-                           )  
-      ,tf.keras.layers.Dropout(0.3)
-      ,tf.keras.layers.LSTM( 512
-                            ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
 
-                           )
-      ,tf.keras.layers.Dense(256) # For tf 2.0
-                                  # activation: Activation function to use.
-                                  # If you don't specify anything,
-                                  # no activation is applied (ie. "linear" activation: a(x) = x).
-                                  # check if this also valid voor tf 1.0
-      ,tf.keras.layers.Dropout(0.3)
-      ,tf.keras.layers.Dense( n_vocab # what does n_vocab mean ????
-                             ,activation=tf.nn.softmax
-                            )
-      #tf.keras.layers.Activation('softmax') # This is move to previous line
-    ])
+    def model():
+        # create model():
+        nn = tf.keras.models.Sequential([  # tensorflow v2
+                tf.keras.layers.LSTM(
+                  # 512, orgineel tf v1
+                  512 # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
+                 ,input_shape=(ntwrk_input.shape[1], ntwrk_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
+                                                                           # first layer need this parameter
+                 ,return_sequences=True # also tensorflow v2 LSTM argument
+                 ,activation=tf.nn.tanh# see issue. Use explicitly default value tanh
+                )
+               ,tf.keras.layers.Dropout(0.3)
+               ,tf.keras.layers.LSTM( 512
+                                     ,return_sequences=True
+                                     ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
+                                    )  
+               ,tf.keras.layers.Dropout(0.3)
+               ,tf.keras.layers.LSTM( 512
+                                     ,activation=tf.nn.tanh # see issue. Use explicitly default value tanh
+
+                                    )
+               ,tf.keras.layers.Dense(256) # For tf 2.0
+                                           # activation: Activation function to use.
+                                           # If you don't specify anything,
+                                           # no activation is applied (ie. "linear" activation: a(x) = x).
+                                           # check if this also valid voor tf 1.0
+               ,tf.keras.layers.Dropout(0.3)
+               ,tf.keras.layers.Dense( ntwrk_n_vocab # what does n_vocab mean ????
+                                      ,activation=tf.nn.softmax
+                                     )
+                #tf.keras.layers.Activation('softmax') # This is move to previous line
+             ])
     
-    #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
-    model.compile( optimizer=tf.keras.optimizers.RMSprop()  # Optimizer
-                  ,loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
-                  ,metrics=['accuracy'] # added
-                 )
-    print("Na compile")
+        #model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
+        nn.compile( optimizer=tf.keras.optimizers.RMSprop()  # Optimizer
+                   ,loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
+                   ,metrics=['accuracy'] # added
+                  )
+        print("Na compile")
 
-    # show used model
-    model.summary()
+        # show used model
+        nn.summary()
+        return nn
 
     return model
 
-def train(model, network_input, network_output):
+def train(model, network_input, network_output, network_n_vocab):
     """ train the neural network """
 
     # See pdf Jason Brownlee Deep Learning with python
     # paragraph 9.3 Grid Search Deep Learning Model Parameters
 
     print("Start train()")
-    # todo create_network must be call without parameters
-    model = tf.keras.wrappers.scikit_learn.KerasClassifier(build_fn=create_network, verbose=0)
+    # create_network call with 2 parameters
+    model = tf.keras.wrappers.scikit_learn.KerasClassifier( build_fn=create_network,ntwrk_input=network_input, ntwrk_n_vocab=network_n_vocab
+                                                           ,verbose=0)
     # grid search epochs, batch size and optimizer
     optimizers = [ 'rmsprop' , 'adam' ]
     init = [ 'normal' , 'uniform' ] # 'glorot_uniform' is deprecated see https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
