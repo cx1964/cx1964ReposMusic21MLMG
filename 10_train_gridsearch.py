@@ -69,11 +69,11 @@ from sklearn.model_selection import GridSearchCV
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 # homeDir when this script is used from my Laptop
-homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+#homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 # homeDir old laptop
 #homeDir = '/home/claude/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 # homeDir when this script is used from my Virtualbox Linux VM
-# homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
+homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 
 def train_network():
     """ Train a Neural Network to generate music """
@@ -138,7 +138,7 @@ def prepare_sequences(notes, n_vocab):
     # get all unique pitch names
     pitchnames = sorted(set(item for item in notes))
     print("pitchnames: ", pitchnames)
-    print("hier1")
+    print("hier1 !!!!")
     # create a dictionary to map pitches to integers
     #        for number, note in enumerate(pitchnames) genereert een reeks met elementen inde vorm <rangnummer>, <pitchname>
     note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
@@ -207,12 +207,14 @@ def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
     #        see https://github.com/tensorflow/tensorflow/issues/30263 
     #        work arround in all tf.keras.layers.LSTM calls
     #        change param activation from tf.nn.tanh to None
-    print("This script has Still an issue: ")
-    print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
-    print("https://github.com/tensorflow/tensorflow/issues/30263") 
+    print("create_network():")
+    #print("This script has Still an issue: ")
+    #print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
+    #print("https://github.com/tensorflow/tensorflow/issues/30263") 
 
     def model():
         # create model():
+        print("model():")
         nn = tf.keras.models.Sequential([  # tensorflow v2
                 tf.keras.layers.LSTM(
                   # 512, orgineel tf v1
@@ -273,15 +275,24 @@ def train(model, network_input, network_output, network_n_vocab):
     epochs = numpy.array([50, 100, 150])
     batches = numpy.array([5, 10, 20])
     param_grid = dict(nb_epoch=epochs, batch_size=batches) #, init=init, optimizer=optimizers)
+    print("Start train()  voor GridSearchCV()")
     grid = GridSearchCV(estimator=model, param_grid=param_grid)
+    print("Start train()  na GridSearchCV()")
     X=network_input 
     Y=network_output
+    print("train() type(X):",type(X)," type(Y):",type(Y)) 
+    print("Start train()  voor grid.fit()")
+    print("Hier gaat het fout")
+    #ToDo
     grid_result = grid.fit(X, Y)
-
+    print("Start train()  na grid.fit()")
     # summarize results
+
+      
     print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
     for params, mean_score, scores in grid_result.grid_scores_:
         print("%f (%f) with: %r" % (scores.mean(), scores.std(), params))
+    
 
     # methode2: creeer een hdf5 file
     # Zie pagina 95 - 96 van pdf (14.3 Checkpoint best Neural Network Model only)
@@ -291,8 +302,6 @@ def train(model, network_input, network_output, network_n_vocab):
     # Zie ook paragraaf 14.2 en 14.3
 
     # het leer proces
-
-
     print("na model.fit")
 
 if __name__ == '__main__':
