@@ -101,21 +101,24 @@ def train_network():
     # map notes to numerical data
     # ToDo: study code from here
     network_input, network_output = prepare_sequences(notes, n_vocab)
+    print("train_network() step1: call create_network()")
     model = create_network(network_input, n_vocab)
 
     #train(model, network_input, network_output) : original code
     #train(model, network_input, network_output, n_vocab)
-    print("   train_network() call train()")
+    print("train_network() step2: call train()")
     train(model=model, network_input=network_input, network_output=network_output, network_n_vocab=n_vocab)
 
 def get_notes():
     """ Get all the notes and chords from the midi files in the ./midi_songs directory """
+
+    print("get_notes() begin")
     notes = []
 
     for file in glob.glob(homeDir+"midi_songs/*.mid"):
         midi = converter.parse(file)
 
-        print("Parsing %s" % file)
+        #print("Parsing %s" % file)
 
         notes_to_parse = None
 
@@ -318,7 +321,7 @@ def train(model, network_input, network_output, network_n_vocab):
          print("opgevangen fout: ", repr(w[-1].message))
     '''
 
-    print("Start train()  na grid.fit()")
+    print("train()  na grid.fit()")
     # summarize results
 
       
@@ -335,7 +338,7 @@ def train(model, network_input, network_output, network_n_vocab):
     # Zie ook paragraaf 14.2 en 14.3
 
     # het leer proces
-    print("na model.fit")
+    #print("na model.fit")
 
 if __name__ == '__main__':
 
@@ -346,5 +349,5 @@ if __name__ == '__main__':
     #print("Eager execution running: ", tf.executing_eagerly())
     print("keras version: ", tf.keras.__version__)
 
-    print("start train_network()")
+    print("\n\n__main__ call train_network()")
     train_network()
