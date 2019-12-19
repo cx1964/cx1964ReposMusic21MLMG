@@ -62,6 +62,12 @@ from music21 import chord, converter, instrument, note
 import tensorflow as tf
 
 from sklearn.model_selection import GridSearchCV
+from sklearn.exceptions import FitFailedWarning
+# https://scikit-learn.org/stable/tutorial/basic/tutorial.html
+# https://www.guru99.com/scikit-learn-tutorial.html
+# https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html
+
+import warnings
 
 # from keras.callbacks import ModelCheckpoint # tensorflow v1
 # from keras.layers import LSTM, Activation, Dense, Dropout # tensorflow v1
@@ -69,14 +75,16 @@ from sklearn.model_selection import GridSearchCV
 # from keras.utils import utils # tensorflow v1. this does not work use tf.keras.utils.<function> as call
 
 # homeDir when this script is used from my Laptop
-#homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
+homeDir = '/home/claude/Documents/sources/python/python3/python3_Muziek_Generator/MLMG/'
 # homeDir old laptop
 #homeDir = '/home/claude/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 # homeDir when this script is used from my Virtualbox Linux VM
-homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
+#homeDir = '/home/test/Documents/sources/python/python3/cx1964ReposMusic21MLMG/'
 
 def train_network():
     """ Train a Neural Network to generate music """
+
+    print("train_network() begin")
 
     # get_notes()
     # see p5 of article
@@ -85,8 +93,8 @@ def train_network():
     
     # get amount of unqiue pitch names
     n_vocab = len(set(notes))
-    print("n_vocab = amount of unique pitch names:", n_vocab)
-    print("len notes: ", len(notes))
+    #print("n_vocab = amount of unique pitch names:", n_vocab)
+    #print("len notes: ", len(notes))
     
     # prepare_sequences()
     # see p6 of article
@@ -97,6 +105,7 @@ def train_network():
 
     #train(model, network_input, network_output) : original code
     #train(model, network_input, network_output, n_vocab)
+    print("   train_network() call train()")
     train(model=model, network_input=network_input, network_output=network_output, network_n_vocab=n_vocab)
 
 def get_notes():
@@ -122,7 +131,7 @@ def get_notes():
             elif isinstance(element, chord.Chord):
                 notes.append('.'.join(str(n) for n in element.normalOrder))
 
-    print("notes:", notes)
+    #print("notes:", notes)
 
     with open(homeDir+'data/notes', 'wb') as filepath:
         pickle.dump(notes, filepath)
@@ -137,12 +146,11 @@ def prepare_sequences(notes, n_vocab):
 
     # get all unique pitch names
     pitchnames = sorted(set(item for item in notes))
-    print("pitchnames: ", pitchnames)
-    print("hier1 !!!!")
+    #print("pitchnames: ", pitchnames)
     # create a dictionary to map pitches to integers
     #        for number, note in enumerate(pitchnames) genereert een reeks met elementen inde vorm <rangnummer>, <pitchname>
     note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
-    print("note_to_int", str(note_to_int))
+    #print("note_to_int", str(note_to_int))
 
     network_input = []
     network_output = []
@@ -177,7 +185,7 @@ def prepare_sequences(notes, n_vocab):
     return (network_input, network_output) # return input and output list with mapped notes
 
 # ToDo
-def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
+def create_network(ntwrk_input, ntwrk_n_vocab):
     # Create wrapper for create_network because of KerasClassifier create_network needs parameter ntwrk_n_vocab
     # https://stackoverflow.com/questions/40393629/how-to-pass-a-parameter-to-scikit-learn-keras-model-function
     # See also https://machinelearningmastery.com/grid-search-hyperparameters-deep-learning-models-python-keras/
@@ -207,19 +215,21 @@ def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
     #        see https://github.com/tensorflow/tensorflow/issues/30263 
     #        work arround in all tf.keras.layers.LSTM calls
     #        change param activation from tf.nn.tanh to None
-    print("create_network():")
+    print("create_network() begin")
     #print("This script has Still an issue: ")
     #print("Skipping optimization due to error while loading function libraries: Invalid argument: Functions")
     #print("https://github.com/tensorflow/tensorflow/issues/30263") 
 
+    network_input = ntwrk_input
+    network_n_vocab = ntwrk_n_vocab
     def model():
         # create model():
-        print("model():")
+        #print("model():")
         nn = tf.keras.models.Sequential([  # tensorflow v2
                 tf.keras.layers.LSTM(
                   # 512, orgineel tf v1
                   512 # aantal nodes in layer uit artikel v1; Geldit ook voor v2?
-                 ,input_shape=(ntwrk_input.shape[1], ntwrk_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
+                 ,input_shape=(network_input.shape[1], network_input.shape[2]) # zie artikel. Geldt dit ik ook voor v2?
                                                                            # first layer need this parameter
                  ,return_sequences=True # also tensorflow v2 LSTM argument
                  ,activation=tf.nn.tanh# see issue. Use explicitly default value tanh
@@ -240,7 +250,7 @@ def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
                                            # no activation is applied (ie. "linear" activation: a(x) = x).
                                            # check if this also valid voor tf 1.0
                ,tf.keras.layers.Dropout(0.3)
-               ,tf.keras.layers.Dense( ntwrk_n_vocab # what does n_vocab mean ????
+               ,tf.keras.layers.Dense( network_n_vocab # what does n_vocab mean ????
                                       ,activation=tf.nn.softmax
                                      )
                 #tf.keras.layers.Activation('softmax') # This is move to previous line
@@ -251,7 +261,7 @@ def create_network(ntwrk_input=None, ntwrk_n_vocab=None):
                    ,loss=tf.keras.losses.CategoricalCrossentropy() # Loss function to minimize
                    ,metrics=['accuracy'] # added
                   )
-        print("Na compile")
+        #print("Na compile")
 
         # show used model
         nn.summary()
@@ -265,26 +275,49 @@ def train(model, network_input, network_output, network_n_vocab):
     # See pdf Jason Brownlee Deep Learning with python
     # paragraph 9.3 Grid Search Deep Learning Model Parameters
 
-    print("Start train()")
+    print("train() begin")
+
+    # Wraper
+    # Truc for passwing parameters to create_network()
+    def cr_network():
+        print("... cr_network()")
+        create_network(network_input,network_n_vocab) 
+
     # create_network call with 2 parameters
-    model = tf.keras.wrappers.scikit_learn.KerasClassifier( build_fn=create_network,ntwrk_input=network_input, ntwrk_n_vocab=network_n_vocab
+    # https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html
+    print("train() call KerasClassifier")
+    model = tf.keras.wrappers.scikit_learn.KerasClassifier( build_fn=cr_network
                                                            ,verbose=0)
+    #print("na tf.keras.wrappers.scikit_learn.KerasClassifier")                                                           
     # grid search epochs, batch size and optimizer
     optimizers = [ 'rmsprop' , 'adam' ]
     init = [ 'normal' , 'uniform' ] # 'glorot_uniform' is deprecated see https://machinelearningmastery.com/use-keras-deep-learning-models-scikit-learn-python/
     epochs = numpy.array([50, 100, 150])
     batches = numpy.array([5, 10, 20])
     param_grid = dict(nb_epoch=epochs, batch_size=batches) #, init=init, optimizer=optimizers)
-    print("Start train()  voor GridSearchCV()")
-    grid = GridSearchCV(estimator=model, param_grid=param_grid)
-    print("Start train()  na GridSearchCV()")
+    #print("train()  voor GridSearchCV()")
+
+    #warnings.simplefilter('always', FitFailedWarning)
+    grid = GridSearchCV( estimator=model
+                        ,param_grid=param_grid
+                        ,cv=5)
+    #print("train()  na GridSearchCV()")
     X=network_input 
-    Y=network_output
-    print("train() type(X):",type(X)," type(Y):",type(Y)) 
-    print("Start train()  voor grid.fit()")
-    print("Hier gaat het fout")
+    y=network_output
+    #print("train() type(X):",type(X)," type(y):",type(y)) 
+    print("train()  voor grid.fit()")
+        
     #ToDo
-    grid_result = grid.fit(X, Y)
+    grid_result = grid.fit(X=X, y=y)
+    '''
+    with warnings.catch_warnings(record=True) as w:
+         try:
+             grid_result = grid.fit(X=X, y=y)
+         except ValueError:
+             pass
+         print("opgevangen fout: ", repr(w[-1].message))
+    '''
+
     print("Start train()  na grid.fit()")
     # summarize results
 
