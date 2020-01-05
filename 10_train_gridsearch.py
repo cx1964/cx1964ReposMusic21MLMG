@@ -284,6 +284,7 @@ def train(model, network_input, network_output, network_n_vocab):
     # Truc for passwing parameters to create_network()
     def cr_network():
         print("... cr_network()")
+        print("... from cr_network() call create_network()")
         create_network(network_input,network_n_vocab) 
 
     # create_network call with 2 parameters
@@ -303,14 +304,20 @@ def train(model, network_input, network_output, network_n_vocab):
     #warnings.simplefilter('always', FitFailedWarning)
     grid = GridSearchCV( estimator=model
                         ,param_grid=param_grid
-                        ,cv=5)
-    #print("train()  na GridSearchCV()")
+                        ,verbose=10 # setting verbose = 10 will print the progress for every 10 task completion
+                        ,n_jobs=-1 # -1, the process will use all cores on your machine
+                        ,cv=5) # Cross validation is used to evaluate each individual model and the default of 3-fold cross validation is used,
+                               # although this can be overridden by specifying the cv argument
+                     
+    print("train()  na GridSearchCV()")
     X=network_input 
     y=network_output
     #print("train() type(X):",type(X)," type(y):",type(y)) 
     print("train()  voor grid.fit()")
         
-    #ToDo
+    #ToDo 
+    # Probleem zit in grid.fit
+    # Als grid_result = grid.fit(X=X, y=y) uitzet, daan geen fout melding
     grid_result = grid.fit(X=X, y=y)
     '''
     with warnings.catch_warnings(record=True) as w:
@@ -324,11 +331,11 @@ def train(model, network_input, network_output, network_n_vocab):
     print("train()  na grid.fit()")
     # summarize results
 
-      
+    '''  
     print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
     for params, mean_score, scores in grid_result.grid_scores_:
         print("%f (%f) with: %r" % (scores.mean(), scores.std(), params))
-    
+    '''
 
     # methode2: creeer een hdf5 file
     # Zie pagina 95 - 96 van pdf (14.3 Checkpoint best Neural Network Model only)
