@@ -174,3 +174,26 @@ min_size = 10
 scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size)
 print('Scores: %s' % scores)
 print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+
+'''
+afmaken
+zie boek
+Mastering Machine Learning with Python in Six Steps
+listing 3-36 p178
+# extra
+print("Extra apply sklearn functions")
+from sklearn.preprocessing import StandardScaler
+# aanpassen : uit list dataset kolom  1 t/m 4 knippen
+X = dataset
+# aanpassen : uit list dataset kolom  5 knippen
+y = dataset
+sc = StandardScaler()
+sc.fit(X)
+X = sc.transform(X)
+# split data into train and test
+print("OK")
+#from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,random_state=0)
+clf = tree.DecisionTreeClas
+'''
