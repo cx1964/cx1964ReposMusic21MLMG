@@ -29,6 +29,23 @@ seed(1)
 filename = 'data_banknote_authentication.csv'
 dataset = load_csv(filename)
 
+# transform dataset to X and y
+X = []
+y = []
+for record in dataset:
+	print("record: ", record, " record[0,4]: ", record[0:4], " type(): ", type(record[0:4]), type(record) )
+	h = record[0:4]
+	print("h",h)
+	X.append(list(record[0:4]))
+	y = y + list(record[4])
+
+# Check aantallen
+print("len(dataset): ", len(dataset))
+print("len(X): ", len(X))
+print("len(y): ", len(y))
+
+# call sci-learn to create Decision Tree 
+
 ''' 
 nog aanzetten
 # aanpassen : uit list dataset kolom  1 t/m 4 knippen
