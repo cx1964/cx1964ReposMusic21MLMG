@@ -39,6 +39,9 @@ pip install matplotlib
 pip install pandas
 pip install statsmodels
 pip install sklearn # Dit command geeft foutmelding "Failed building wheel for sklearn", wat genegeerd kan worden
+                    # Consider using the `--user` option or check the permissions tgv install obv pip install -U scikit-learn
+#pip install sklearn --user
+
 python versions.py
 
 #  Install deep learning packages zie paragraaf 5 van https://machinelearningmastery.com/setup-python-environment-machine-learning-deep-learning-anaconda/
